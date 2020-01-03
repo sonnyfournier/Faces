@@ -6,6 +6,7 @@ target 'Faces' do
   use_frameworks!
 
   # Pods for Faces
-  pod 'SnapKit', '~> 5.0.1'
+  pod 'SnapKit', '~> 5.0.1'               # Auto Layout DSL
+  pod 'SwiftLint', '~> 0.38.0'            # Enforce Swift style and conventions
 
 end
