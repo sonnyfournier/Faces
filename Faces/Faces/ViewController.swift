@@ -11,8 +11,9 @@ import SnapKit
 
 class ViewController: UIViewController {
 
-    let joystickSize = 100
+    let joystickSize = 150
     let substractSize = 200
+    let joystickOffset = 10
 
     let joystickSubstractView = UIView()
     let joystickView = UIView()
@@ -20,14 +21,14 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        joystickSubstractView.backgroundColor = .yellow
+        joystickSubstractView.backgroundColor = .gray
         joystickSubstractView.layer.cornerRadius = CGFloat(substractSize / 2)
         self.view.addSubview(joystickSubstractView)
 
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(dragJoystick))
         joystickView.isUserInteractionEnabled = true
         joystickView.addGestureRecognizer(panGesture)
-        joystickView.backgroundColor = .red
+        joystickView.backgroundColor = .white
         joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
         joystickSubstractView.addSubview(joystickView)
 
@@ -47,25 +48,17 @@ class ViewController: UIViewController {
         self.view.bringSubviewToFront(joystickView)
         let translation = sender.translation(in: self.view)
 
-        joystickView.center = CGPoint(x: joystickView.center.x + translation.x,
-                                      y: joystickView.center.y + translation.y)
+        let joystickCenter = joystickView.convert(joystickView.center, to: self.view)
+        let futureJoystickCenter =  CGPoint(x: joystickCenter.x - joystickView.frame.minX + translation.x,
+                                            y: joystickCenter.y - joystickView.frame.minY + translation.y)
+        let distanceBetweenCenters = hypot(futureJoystickCenter.x - joystickSubstractView.center.x,
+                                           futureJoystickCenter.y - joystickSubstractView.center.y)
+
+        if CGFloat(substractSize / 2 + joystickOffset) >= (distanceBetweenCenters + CGFloat(joystickSize / 2)) {
+            joystickView.center = CGPoint(x: joystickView.center.x + translation.x,
+                                          y: joystickView.center.y + translation.y)
+        }
 
         sender.setTranslation(CGPoint.zero, in: self.view)
-    }
-}
-
-extension ViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let substractCenter = scrollView.center
-        let joystickCenter = joystickView.convert(joystickView.center, to: self.view)
-        let distanceBetweenCenters = hypot((joystickCenter.x - joystickView.frame.minX) - substractCenter.x,
-                                           (joystickCenter.y - joystickView.frame.minY) - substractCenter.y)
-
-        if CGFloat(substractSize / 2) >= (distanceBetweenCenters + CGFloat(joystickSize / 2)) {
-            print("Inside")
-        } else {
-            _ = CGPoint(x: substractCenter.x + ((joystickCenter.x - joystickView.frame.minX) - substractCenter.x),
-                        y: substractCenter.y + ((joystickCenter.y - joystickView.frame.minY) - substractCenter.y))
-        }
     }
 }
