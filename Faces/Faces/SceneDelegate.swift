@@ -18,8 +18,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-        window?.rootViewController = ViewController()
-        window?.rootViewController?.view.backgroundColor = .black
+        let joystickViewController = JoystickViewController()
+        joystickViewController.joystickSize = 150
+        joystickViewController.substractSize = 250
+        joystickViewController.offsetMultiplier = 0.7
+        joystickViewController.view.backgroundColor = .systemBackground
+        window?.rootViewController = joystickViewController
         window?.makeKeyAndVisible()
     }
 

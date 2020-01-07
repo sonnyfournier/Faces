@@ -10,7 +10,7 @@
 		422FD5242D528682BEBA2A23 /* Pods_Faces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F64D36625FC7AE90A9EED8C /* Pods_Faces.framework */; };
 		E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */; };
 		E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */; };
-		E0EEC8C623BFED7C00A7C58C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C523BFED7C00A7C58C /* ViewController.swift */; };
+		E0EEC8C623BFED7C00A7C58C /* JoystickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */; };
 		E0EEC8CB23BFED7C00A7C58C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */; };
 		E0EEC8CE23BFED7C00A7C58C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0EEC8CC23BFED7C00A7C58C /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
@@ -22,7 +22,7 @@
 		E0EEC8BE23BFED7C00A7C58C /* Faces.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Faces.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		E0EEC8C523BFED7C00A7C58C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickViewController.swift; sourceTree = "<group>"; };
 		E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0EEC8CD23BFED7C00A7C58C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E0EEC8CF23BFED7C00A7C58C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 			children = (
 				E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */,
 				E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */,
-				E0EEC8C523BFED7C00A7C58C /* ViewController.swift */,
+				E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */,
 				E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */,
 				E0EEC8CC23BFED7C00A7C58C /* LaunchScreen.storyboard */,
 				E0EEC8CF23BFED7C00A7C58C /* Info.plist */,
@@ -221,7 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0EEC8C623BFED7C00A7C58C /* ViewController.swift in Sources */,
+				E0EEC8C623BFED7C00A7C58C /* JoystickViewController.swift in Sources */,
 				E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */,
 				E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */,
 			);
