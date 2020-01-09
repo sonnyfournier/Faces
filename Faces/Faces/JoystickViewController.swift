@@ -27,53 +27,25 @@ class JoystickViewController: UIViewController {
     private let joystickView = UIView()
 
     // TODO: Remove this - debug purpose
-    let debugTextView = UITextView()
+    let slopeTextView = UITextView()
     let line = CAShapeLayer()
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        joystickSubstractView.backgroundColor = .gray
-        joystickSubstractView.layer.cornerRadius = CGFloat(substractSize / 2)
-        self.view.addSubview(joystickSubstractView)
+        initViews()
+        setViewsConstraints()
 
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(dragJoystick(_:)))
-        joystickView.isUserInteractionEnabled = true
-        joystickView.addGestureRecognizer(panGesture)
-        joystickView.backgroundColor = .yellow
-        joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
-        joystickSubstractView.addSubview(joystickView)
-
-        joystickSubstractView.snp.makeConstraints {
-            $0.size.equalTo(substractSize)
-            $0.centerX.equalToSuperview()
-            $0.bottom.equalToSuperview().inset(150)
-        }
-
-        joystickView.snp.makeConstraints {
-            $0.size.equalTo(joystickSize)
-            $0.center.equalToSuperview()
-        }
+        innerRadius = (substractSize - joystickSize) * offsetMultiplier
 
         // TODO: Remove this - debug purpose
-        debugTextView.text = "✛"
-        debugTextView.textAlignment = .center
-        debugTextView.font = debugTextView.font?.withSize(20)
-        self.view.addSubview(debugTextView)
-        debugTextView.snp.makeConstraints {
-            $0.width.equalTo(450)
-            $0.height.equalTo(50)
+        slopeTextView.font = slopeTextView.font?.withSize(20)
+        self.view.addSubview(slopeTextView)
+        slopeTextView.snp.makeConstraints {
+            $0.width.equalToSuperview().inset(20)
+            $0.height.equalTo(20)
             $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview()//.inset(150)
-        }
-
-        let tmp = UIView()
-        tmp.backgroundColor = .red
-        self.view.addSubview(tmp)
-        tmp.snp.makeConstraints {
-            $0.width.equalTo(1)
-            $0.height.equalTo(substractSize)
-            $0.center.equalTo(joystickSubstractView)
+            $0.centerY.equalToSuperview().offset(-80)
         }
 
         let separator1 = UIView()
@@ -94,8 +66,32 @@ class JoystickViewController: UIViewController {
             $0.center.equalTo(joystickSubstractView)
         }
         // End of debug
+    }
 
-        innerRadius = (substractSize - joystickSize) * offsetMultiplier
+    private func initViews() {
+        joystickSubstractView.backgroundColor = .gray
+        joystickSubstractView.layer.cornerRadius = CGFloat(substractSize / 2)
+        self.view.addSubview(joystickSubstractView)
+
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(dragJoystick(_:)))
+        joystickView.isUserInteractionEnabled = true
+        joystickView.addGestureRecognizer(panGesture)
+        joystickView.backgroundColor = .yellow
+        joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
+        joystickSubstractView.addSubview(joystickView)
+    }
+
+    private func setViewsConstraints() {
+        joystickSubstractView.snp.makeConstraints {
+            $0.size.equalTo(substractSize)
+            $0.centerX.equalToSuperview()
+            $0.bottom.equalToSuperview().inset(150)
+        }
+
+        joystickView.snp.makeConstraints {
+            $0.size.equalTo(joystickSize)
+            $0.center.equalToSuperview()
+        }
     }
 
     @objc private func dragJoystick(_ sender: UIPanGestureRecognizer) {
@@ -117,9 +113,8 @@ class JoystickViewController: UIViewController {
 
         // TEST ZONE
         let linePath = UIBezierPath()
-        let convertedSubstractCenter = joystickSubstractView.convert(joystickSubstractViewCenter, to: self.view)
         let convertedJoystickCenter = joystickSubstractView.convert(newJoystickCenter, to: self.view)
-        linePath.move(to: convertedSubstractCenter)
+        linePath.move(to: joystickSubstractView.center)
         linePath.addLine(to: convertedJoystickCenter)
         line.path = linePath.cgPath
         line.strokeColor = UIColor.red.cgColor
@@ -128,70 +123,17 @@ class JoystickViewController: UIViewController {
         line.removeFromSuperlayer()
         self.view.layer.addSublayer(line)
 
-        let slope = (joystickSubstractViewCenter.y - newJoystickCenter.y) /
-            (joystickSubstractViewCenter.x - newJoystickCenter.x)
-        var tan = atan(slope)
-        if newJoystickCenter.x > joystickSubstractViewCenter.x,
-            newJoystickCenter.y > joystickSubstractViewCenter.y {
-            // debugTextView.text = "⬊"
-            tan = -tan
-        } else if newJoystickCenter.x > joystickSubstractViewCenter.x,
-                   newJoystickCenter.y < joystickSubstractViewCenter.y {
-            // debugTextView.text = "⬈"
-            tan = -tan
-        } else if newJoystickCenter.x < joystickSubstractViewCenter.x,
-            newJoystickCenter.y < joystickSubstractViewCenter.y {
-            // debugTextView.text = "⬉"
-        } else if newJoystickCenter.x < joystickSubstractViewCenter.x,
-            newJoystickCenter.y > joystickSubstractViewCenter.y {
-            // debugTextView.text = "⬋"
+        let slope = (convertedJoystickCenter.y - joystickSubstractView.center.y) /
+            -(convertedJoystickCenter.x - joystickSubstractView.center.x)
+        let degrees = atan(slope) * 180 / CGFloat.pi
+        slopeTextView.text = "Degrees: \(degrees)°"
+
+        if convertedJoystickCenter.y > joystickSubstractView.center.y {
+            slopeTextView.text = degrees > 0 ? "Top | Right" : "Top | Left"
+        } else {
+            slopeTextView.text = degrees > 0 ? "Bottom | Left" : "Bottom | Right"
         }
 
-        let oldRange: CGFloat = (CGFloat.pi / 2) + (CGFloat.pi / 2)
-        let newRange: CGFloat = 1.0 - 0.0
-        // Convert range from [-1.5, 1.5] to [0.0, 1.0]
-        let tmp1 = tan + (CGFloat.pi / 2)
-        let newTan = ((tmp1 * newRange) / oldRange)
-
-        debugTextView.text = "Slope: \(newTan)"
-
-        if newJoystickCenter.x >= joystickSubstractViewCenter.x,
-            newJoystickCenter.y >= joystickSubstractViewCenter.y {
-            if newTan >= 0, newTan < 1 / 8 {
-                debugTextView.text = "Bottom"
-            } else  if newTan <= 1 / 2, newTan > (1 / 8) * 3 {
-                debugTextView.text = "Right"
-            } else {
-                debugTextView.text = "Bottom | Right"
-            }
-        } else if newJoystickCenter.x >= joystickSubstractViewCenter.x,
-                   newJoystickCenter.y <= joystickSubstractViewCenter.y {
-            if newTan >= 1 / 2, newTan < (1 / 8) * 5 {
-                debugTextView.text = "Right"
-            } else if newTan <= 1, newTan > (1 / 8) * 7 {
-                debugTextView.text = "Top"
-            } else {
-                debugTextView.text = "Top | Right"
-            }
-        } else if newJoystickCenter.x <= joystickSubstractViewCenter.x,
-            newJoystickCenter.y <= joystickSubstractViewCenter.y {
-            if newTan >= 1 / 2, newTan < (1 / 8) * 5 {
-                debugTextView.text = "Left"
-            } else if newTan > (1 / 8) * 7, newTan <= 1 {
-                debugTextView.text = "Top"
-            } else {
-                debugTextView.text = "Top | Left"
-            }
-        } else if newJoystickCenter.x <= joystickSubstractViewCenter.x,
-            newJoystickCenter.y >= joystickSubstractViewCenter.y {
-            if newTan <= 1 / 2, newTan > (1 / 8) * 3 {
-                debugTextView.text = "Left"
-            } else if newTan >= 0, newTan < (1 / 8) {
-                debugTextView.text = "Bottom"
-            } else {
-                debugTextView.text = "Bottom | Left"
-            }
-        }
         // END TEST ZONE
 
         joystickView.center = newJoystickCenter
