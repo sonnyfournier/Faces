@@ -12,6 +12,18 @@ import SnapKit
 // Special thanks to DonMag
 // https://stackoverflow.com/questions/59616783/move-a-circular-uiview-inside-another-circular-uiview
 
+enum JoystickOrientation {
+    case topLeft
+    case top
+    case topRight
+    case right
+    case bottomRight
+    case bottom
+    case bottomLeft
+    case left
+    case none
+}
+
 class JoystickViewController: UIViewController {
 
     var joystickSize: CGFloat = 150
@@ -27,8 +39,9 @@ class JoystickViewController: UIViewController {
     private let joystickView = UIView()
 
     // TODO: Remove this - debug purpose
-    let slopeTextView = UITextView()
+    let debugTextView = UITextView()
     let line = CAShapeLayer()
+    // End of debug
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,11 +52,12 @@ class JoystickViewController: UIViewController {
         innerRadius = (substractSize - joystickSize) * offsetMultiplier
 
         // TODO: Remove this - debug purpose
-        slopeTextView.font = slopeTextView.font?.withSize(20)
-        self.view.addSubview(slopeTextView)
-        slopeTextView.snp.makeConstraints {
+        debugTextView.font = debugTextView.font?.withSize(20)
+        debugTextView.textAlignment = .center
+        self.view.addSubview(debugTextView)
+        debugTextView.snp.makeConstraints {
             $0.width.equalToSuperview().inset(20)
-            $0.height.equalTo(20)
+            $0.height.equalTo(40)
             $0.centerX.equalToSuperview()
             $0.centerY.equalToSuperview().offset(-80)
         }
@@ -76,7 +90,7 @@ class JoystickViewController: UIViewController {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(dragJoystick(_:)))
         joystickView.isUserInteractionEnabled = true
         joystickView.addGestureRecognizer(panGesture)
-        joystickView.backgroundColor = .yellow
+        joystickView.backgroundColor = .white
         joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
         joystickSubstractView.addSubview(joystickView)
     }
@@ -111,7 +125,7 @@ class JoystickViewController: UIViewController {
                                             to: touchedLocation, distance: innerRadius)
         }
 
-        // TEST ZONE
+        // TODO: Remove this - debug purpose
         let linePath = UIBezierPath()
         let convertedJoystickCenter = joystickSubstractView.convert(newJoystickCenter, to: self.view)
         linePath.move(to: joystickSubstractView.center)
@@ -122,21 +136,36 @@ class JoystickViewController: UIViewController {
         line.lineJoin = CAShapeLayerLineJoin.round
         line.removeFromSuperlayer()
         self.view.layer.addSublayer(line)
+        // End of debug
 
         let slope = (convertedJoystickCenter.y - joystickSubstractView.center.y) /
             -(convertedJoystickCenter.x - joystickSubstractView.center.x)
         let degrees = atan(slope) * 180 / CGFloat.pi
-        slopeTextView.text = "Degrees: \(degrees)°"
+        let orientation = getJoystickOrientation(joystickCenter: convertedJoystickCenter,
+                                                 substractCenter: joystickSubstractView.center, degrees: degrees)
 
-        if convertedJoystickCenter.y > joystickSubstractView.center.y {
-            slopeTextView.text = degrees > 0 ? "Top | Right" : "Top | Left"
-        } else {
-            slopeTextView.text = degrees > 0 ? "Bottom | Left" : "Bottom | Right"
-        }
-
-        // END TEST ZONE
+        debugTextView.text = "Orientation: \(orientation)"
 
         joystickView.center = newJoystickCenter
+    }
+
+    private func getJoystickOrientation(joystickCenter: CGPoint, substractCenter: CGPoint,
+                                        degrees: CGFloat) -> JoystickOrientation {
+        // If we check that the location of the joystick y is lower than the location of
+        // the substrat y rather than the other way around it is because on iOS the coordinates (0, 0)
+        // are located at the top left of the screen.
+        // So if the location of the joystick y is lower than the location of the substract y
+        // it actually means that joystick center is above substract center
+        let joystickIsUp: Bool = joystickCenter.y < substractCenter.y
+        if abs(degrees) >= 0, abs(degrees) <= 90 / 4 {
+            return joystickIsUp ? (degrees > 0 ? JoystickOrientation.right : JoystickOrientation.left) :
+                (degrees > 0 ? JoystickOrientation.left : JoystickOrientation.right)
+        } else if abs(degrees) >= 90 / 4, abs(degrees) <= (90 / 4) * 3 {
+            return joystickIsUp ? (degrees > 0 ? JoystickOrientation.topRight : JoystickOrientation.topLeft) :
+                (degrees > 0 ? JoystickOrientation.bottomLeft :  JoystickOrientation.bottomRight)
+        } else {
+            return joystickIsUp ? JoystickOrientation.top : JoystickOrientation.bottom
+        }
     }
 
     // TODO: Move those method in a helper (MathHelper maybe ?)
