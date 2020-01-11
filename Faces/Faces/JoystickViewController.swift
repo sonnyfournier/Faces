@@ -38,11 +38,6 @@ class JoystickViewController: UIViewController {
     private let joystickSubstractView = UIView()
     private let joystickView = UIView()
 
-    // TODO: Remove this - debug purpose
-    let debugTextView = UITextView()
-    let line = CAShapeLayer()
-    // End of debug
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -50,36 +45,6 @@ class JoystickViewController: UIViewController {
         setViewsConstraints()
 
         innerRadius = (substractSize - joystickSize) * offsetMultiplier
-
-        // TODO: Remove this - debug purpose
-        debugTextView.font = debugTextView.font?.withSize(20)
-        debugTextView.textAlignment = .center
-        self.view.addSubview(debugTextView)
-        debugTextView.snp.makeConstraints {
-            $0.width.equalToSuperview().inset(20)
-            $0.height.equalTo(40)
-            $0.centerX.equalToSuperview()
-            $0.centerY.equalToSuperview().offset(-80)
-        }
-
-        let separator1 = UIView()
-        separator1.backgroundColor = .red
-        self.view.addSubview(separator1)
-        separator1.snp.makeConstraints {
-            $0.width.equalTo(1)
-            $0.height.equalTo(substractSize)
-            $0.center.equalTo(joystickSubstractView)
-        }
-
-        let separator2 = UIView()
-        separator2.backgroundColor = .red
-        self.view.addSubview(separator2)
-        separator2.snp.makeConstraints {
-            $0.height.equalTo(1)
-            $0.width.equalTo(substractSize)
-            $0.center.equalTo(joystickSubstractView)
-        }
-        // End of debug
     }
 
     private func initViews() {
@@ -125,27 +90,14 @@ class JoystickViewController: UIViewController {
                                             to: touchedLocation, distance: innerRadius)
         }
 
-        // TODO: Remove this - debug purpose
-        let linePath = UIBezierPath()
         let convertedJoystickCenter = joystickSubstractView.convert(newJoystickCenter, to: self.view)
-        linePath.move(to: joystickSubstractView.center)
-        linePath.addLine(to: convertedJoystickCenter)
-        line.path = linePath.cgPath
-        line.strokeColor = UIColor.red.cgColor
-        line.lineWidth = 1
-        line.lineJoin = CAShapeLayerLineJoin.round
-        line.removeFromSuperlayer()
-        self.view.layer.addSublayer(line)
-        // End of debug
-
         let slope = (convertedJoystickCenter.y - joystickSubstractView.center.y) /
             -(convertedJoystickCenter.x - joystickSubstractView.center.x)
         let degrees = atan(slope) * 180 / CGFloat.pi
         let orientation = getJoystickOrientation(joystickCenter: convertedJoystickCenter,
                                                  substractCenter: joystickSubstractView.center, degrees: degrees)
 
-        debugTextView.text = "Orientation: \(orientation)"
-
+        print("Joystick's \(orientation)")
         joystickView.center = newJoystickCenter
     }
 
