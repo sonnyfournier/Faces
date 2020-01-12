@@ -67,17 +67,4 @@ class JoystickViewModel {
             return joystickIsUp ? JoystickOrientation.top : JoystickOrientation.bottom
         }
     }
-
-    // TODO: Move those method in a helper (MathHelper maybe ?)
-    private func lineLength(from firstPoint: CGPoint, to secondPoint: CGPoint) -> CGFloat {
-        return hypot(secondPoint.x - firstPoint.x, secondPoint.y - firstPoint.y)
-    }
-
-    private func pointOnLine(from startPoint: CGPoint, to endPoint: CGPoint, distance: CGFloat) -> CGPoint {
-        let totalDistance = lineLength(from: startPoint, to: endPoint)
-        let totalDelta = CGPoint(x: endPoint.x - startPoint.x, y: endPoint.y - startPoint.y)
-        let percentage = distance / totalDistance
-        let delta = CGPoint(x: totalDelta.x * percentage, y: totalDelta.y * percentage)
-        return CGPoint(x: startPoint.x + delta.x, y: startPoint.y + delta.y)
-    }
 }
