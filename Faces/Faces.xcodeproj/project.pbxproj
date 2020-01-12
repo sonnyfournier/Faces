@@ -10,9 +10,11 @@
 		422FD5242D528682BEBA2A23 /* Pods_Faces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F64D36625FC7AE90A9EED8C /* Pods_Faces.framework */; };
 		E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */; };
 		E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */; };
-		E0EEC8C623BFED7C00A7C58C /* JoystickViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */; };
+		E0EEC8C623BFED7C00A7C58C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C523BFED7C00A7C58C /* HomeViewController.swift */; };
 		E0EEC8CB23BFED7C00A7C58C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */; };
 		E0EEC8CE23BFED7C00A7C58C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E0EEC8CC23BFED7C00A7C58C /* LaunchScreen.storyboard */; };
+		E0F6F79C23CB352800C2D812 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F6F79B23CB352800C2D812 /* JoystickView.swift */; };
+		E0F6F79E23CB353100C2D812 /* JoystickViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0F6F79D23CB353100C2D812 /* JoystickViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,10 +24,12 @@
 		E0EEC8BE23BFED7C00A7C58C /* Faces.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Faces.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickViewController.swift; sourceTree = "<group>"; };
+		E0EEC8C523BFED7C00A7C58C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E0EEC8CD23BFED7C00A7C58C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		E0EEC8CF23BFED7C00A7C58C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E0F6F79B23CB352800C2D812 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
+		E0F6F79D23CB353100C2D812 /* JoystickViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,14 +82,24 @@
 		E0EEC8C023BFED7C00A7C58C /* Faces */ = {
 			isa = PBXGroup;
 			children = (
+				E0F6F79A23CB351200C2D812 /* JoystickView */,
 				E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */,
 				E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */,
-				E0EEC8C523BFED7C00A7C58C /* JoystickViewController.swift */,
+				E0EEC8C523BFED7C00A7C58C /* HomeViewController.swift */,
 				E0EEC8CA23BFED7C00A7C58C /* Assets.xcassets */,
 				E0EEC8CC23BFED7C00A7C58C /* LaunchScreen.storyboard */,
 				E0EEC8CF23BFED7C00A7C58C /* Info.plist */,
 			);
 			path = Faces;
+			sourceTree = "<group>";
+		};
+		E0F6F79A23CB351200C2D812 /* JoystickView */ = {
+			isa = PBXGroup;
+			children = (
+				E0F6F79B23CB352800C2D812 /* JoystickView.swift */,
+				E0F6F79D23CB353100C2D812 /* JoystickViewModel.swift */,
+			);
+			path = JoystickView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -221,7 +235,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E0EEC8C623BFED7C00A7C58C /* JoystickViewController.swift in Sources */,
+				E0F6F79E23CB353100C2D812 /* JoystickViewModel.swift in Sources */,
+				E0F6F79C23CB352800C2D812 /* JoystickView.swift in Sources */,
+				E0EEC8C623BFED7C00A7C58C /* HomeViewController.swift in Sources */,
 				E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */,
 				E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */,
 			);
