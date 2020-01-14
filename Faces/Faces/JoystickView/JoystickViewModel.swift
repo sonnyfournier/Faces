@@ -53,30 +53,30 @@ enum JoystickDirection: Int, CaseIterable {
 
 class JoystickViewModel {
     func dragJoystick(touchedLocation: CGPoint, joystickView: UIView, substractView: UIView,
-                      innerRadius: CGFloat) -> CGPoint {
+                      innerRadius: CGFloat) -> (newCenter: CGPoint, direction: JoystickDirection) {
 
-        let joystickSubstractViewCenter = CGPoint(x: substractView.bounds.width / 2,
-                                                  y: substractView.bounds.height / 2)
+        let substractViewCenter = CGPoint(x: substractView.bounds.width / 2,
+                                          y: substractView.bounds.height / 2)
 
         var newJoystickCenter = touchedLocation
 
-        let distance = lineLength(from: touchedLocation, to: joystickSubstractViewCenter)
+        let distance = lineLength(from: touchedLocation, to: substractViewCenter)
 
         // If the touch would put the joystick view outside the substract view
         // find the point on the line from center to touch, at innerRadius distance
         if distance > innerRadius {
-            newJoystickCenter = pointOnLine(from: joystickSubstractViewCenter,
-                                            to: touchedLocation, distance: innerRadius)
+            newJoystickCenter = pointOnLine(from: substractViewCenter, to: touchedLocation, distance: innerRadius)
         }
 
         let convertedJoystickCenter = substractView.convert(newJoystickCenter, to: substractView)
-        let slope = (convertedJoystickCenter.y - substractView.center.y) / -(convertedJoystickCenter.x - substractView.center.x)
+        let slope = (convertedJoystickCenter.y - substractView.center.y) /
+            -(convertedJoystickCenter.x - substractView.center.x)
         let degrees = atan(slope) * 180 / CGFloat.pi
-        let orientation = getJoystickDirection(joystickCenter: convertedJoystickCenter,
-                                               substractCenter: substractView.center, degrees: degrees)
+        let direction = getJoystickDirection(joystickCenter: convertedJoystickCenter,
+                                             substractCenter: substractView.center, degrees: degrees)
 
-        print("Joystick's \(orientation)")
-        return newJoystickCenter
+        // TODO: Remove this
+        return (newJoystickCenter, direction)
     }
 
     private func getJoystickDirection(joystickCenter: CGPoint, substractCenter: CGPoint,

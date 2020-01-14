@@ -64,7 +64,7 @@ class JoystickView: UIView {
 
         eyesLabels = JoystickDirection.allCases.enumerated().map({ index, direction in
             let eyesLabel = EyesLabel(text: eyesTexts[index], direction: direction)
-            eyesLabel.layer.backgroundColor = UIColor.yellow.cgColor
+            // TODO: Remove this
             eyesLabel.layer.cornerRadius = 35 / 2
             self.addSubview(eyesLabel)
             return eyesLabel
@@ -94,9 +94,15 @@ class JoystickView: UIView {
     }
 
     @objc private func dragJoystick(_ sender: UIPanGestureRecognizer) {
-        joystickView.center = viewModel.dragJoystick(touchedLocation: sender.location(in: substractView),
-                                                     joystickView: joystickView,
-                                                     substractView: substractView,
-                                                     innerRadius: innerRadius)
+        let tuple = viewModel.dragJoystick(touchedLocation: sender.location(in: substractView),
+                                           joystickView: joystickView, substractView: substractView,
+                                           innerRadius: innerRadius)
+        joystickView.center = tuple.newCenter
+
+        // TODO: Remove this
+        for eyesLabel in eyesLabels {
+            eyesLabel.selected = eyesLabel.direction == tuple.direction
+            eyesLabel.layer.backgroundColor = eyesLabel.direction == tuple.direction ? UIColor.white.cgColor : .none
+        }
     }
 }
