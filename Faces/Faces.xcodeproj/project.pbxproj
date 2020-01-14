@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		422FD5242D528682BEBA2A23 /* Pods_Faces.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5F64D36625FC7AE90A9EED8C /* Pods_Faces.framework */; };
+		E02B17F323CE54DE003FABC9 /* MathHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02B17F223CE54DE003FABC9 /* MathHelper.swift */; };
+		E02B17F723CE5792003FABC9 /* EyesLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02B17F623CE5792003FABC9 /* EyesLabel.swift */; };
+		E02B17F923CE57AA003FABC9 /* EyesLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E02B17F823CE57AA003FABC9 /* EyesLabelViewModel.swift */; };
 		E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */; };
 		E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */; };
 		E0EEC8C623BFED7C00A7C58C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0EEC8C523BFED7C00A7C58C /* HomeViewController.swift */; };
@@ -22,6 +25,9 @@
 		08FA86B648D352D94C6AB802 /* Pods-Faces.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Faces.release.xcconfig"; path = "Target Support Files/Pods-Faces/Pods-Faces.release.xcconfig"; sourceTree = "<group>"; };
 		1659C9713EE4307197AAD638 /* Pods-Faces.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Faces.debug.xcconfig"; path = "Target Support Files/Pods-Faces/Pods-Faces.debug.xcconfig"; sourceTree = "<group>"; };
 		5F64D36625FC7AE90A9EED8C /* Pods_Faces.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Faces.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E02B17F223CE54DE003FABC9 /* MathHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathHelper.swift; sourceTree = "<group>"; };
+		E02B17F623CE5792003FABC9 /* EyesLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyesLabel.swift; sourceTree = "<group>"; };
+		E02B17F823CE57AA003FABC9 /* EyesLabelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyesLabelViewModel.swift; sourceTree = "<group>"; };
 		E0EEC8BE23BFED7C00A7C58C /* Faces.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Faces.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +69,15 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		E02B17F523CE5784003FABC9 /* EyesLabel */ = {
+			isa = PBXGroup;
+			children = (
+				E02B17F623CE5792003FABC9 /* EyesLabel.swift */,
+				E02B17F823CE57AA003FABC9 /* EyesLabelViewModel.swift */,
+			);
+			path = EyesLabel;
+			sourceTree = "<group>";
+		};
 		E0EEC8B523BFED7C00A7C58C = {
 			isa = PBXGroup;
 			children = (
@@ -84,6 +99,7 @@
 		E0EEC8C023BFED7C00A7C58C /* Faces */ = {
 			isa = PBXGroup;
 			children = (
+				E02B17F523CE5784003FABC9 /* EyesLabel */,
 				E0F6F79F23CB366B00C2D812 /* Helpers */,
 				E0F6F79A23CB351200C2D812 /* JoystickView */,
 				E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */,
@@ -109,6 +125,7 @@
 			isa = PBXGroup;
 			children = (
 				E0F6F7A023CB367A00C2D812 /* GeometryHelper.swift */,
+				E02B17F223CE54DE003FABC9 /* MathHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -246,11 +263,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E02B17F923CE57AA003FABC9 /* EyesLabelViewModel.swift in Sources */,
+				E02B17F723CE5792003FABC9 /* EyesLabel.swift in Sources */,
 				E0F6F79E23CB353100C2D812 /* JoystickViewModel.swift in Sources */,
 				E0F6F79C23CB352800C2D812 /* JoystickView.swift in Sources */,
 				E0EEC8C623BFED7C00A7C58C /* HomeViewController.swift in Sources */,
 				E0EEC8C223BFED7C00A7C58C /* AppDelegate.swift in Sources */,
 				E0EEC8C423BFED7C00A7C58C /* SceneDelegate.swift in Sources */,
+				E02B17F323CE54DE003FABC9 /* MathHelper.swift in Sources */,
 				E0F6F7A123CB367A00C2D812 /* GeometryHelper.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
