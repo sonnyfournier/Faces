@@ -99,8 +99,8 @@
 		E0EEC8C023BFED7C00A7C58C /* Faces */ = {
 			isa = PBXGroup;
 			children = (
-				E02B17F523CE5784003FABC9 /* EyesLabel */,
 				E0F6F79F23CB366B00C2D812 /* Helpers */,
+				E02B17F523CE5784003FABC9 /* EyesLabel */,
 				E0F6F79A23CB351200C2D812 /* JoystickView */,
 				E0EEC8C123BFED7C00A7C58C /* AppDelegate.swift */,
 				E0EEC8C323BFED7C00A7C58C /* SceneDelegate.swift */,

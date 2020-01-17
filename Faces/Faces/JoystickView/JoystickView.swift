@@ -9,48 +9,65 @@
 import UIKit
 import SnapKit
 
-// Special thanks to DonMag
-// https://stackoverflow.com/questions/59616783/move-a-circular-uiview-inside-another-circular-uiview
-
 class JoystickView: UIView {
 
-    var viewModel: JoystickViewModel
+    private var viewModel: JoystickViewModel
+
+    // MARK: - Properties
 
     var joystickSize: CGFloat = 150
     var substractSize: CGFloat = 200
 
-    // If you want the "joystick" circle to overlap the "outer circle" a bit, adjust this value
+    /// If you want the "joystick" circle to overlap the "substract" circle, adjust this value
     var offsetMultiplier: CGFloat = 0.5
 
     var joystickColor: UIColor = .systemBackground
     var substractColor: UIColor = .gray
 
-    private var innerRadius: CGFloat = 0.0
+    // MARK: - Private properties
 
-    /// Mark - Views
+    private var innerRadius: CGFloat = 0.0
+    private var joystickCenter: CGPoint? {
+        didSet {
+            guard let joystickCenter = joystickCenter else { return }
+
+            joystickView.center = joystickCenter
+            let direction = getJoystickDirection()
+            selectEyesLabelAccording(to: direction)
+        }
+    }
+    // TODO: Maybe find a better place for this ?
+    private let eyesTexts = ["^~", "^^", "~^", ">>", "⌐⌐", "><", "¬¬", "<<"]
+
+    // MARK: - Views
+
     private let substractView = UIView()
     private let joystickView = UIView()
-    private var eyesLabels: [EyesLabel] = []
+    private var joystickRelatedEyesLabels: [EyesLabel] = []
 
-    // TODO: Move this
-    private let eyesTexts = ["↖️", "⬆️", "↗️", "➡️", "↘️", "⬇️", "↙️", "⬅️"]
+    // MARK: - Initialization
 
     init(viewModel: JoystickViewModel) {
+
         self.viewModel = viewModel
 
         super.init(frame: CGRect())
 
-        initViews()
-        setViewsConstraints()
+        setupViews()
+        setupViewsConstraints()
 
         innerRadius = (substractSize - joystickSize) * offsetMultiplier
     }
 
     required init?(coder: NSCoder) {
+
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func initViews() {
+    // MARK: - Views setup
+
+    private func setupViews() {
+
         substractView.backgroundColor = substractColor
         substractView.layer.cornerRadius = CGFloat(substractSize / 2)
         self.addSubview(substractView)
@@ -62,16 +79,15 @@ class JoystickView: UIView {
         joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
         substractView.addSubview(joystickView)
 
-        eyesLabels = JoystickDirection.allCases.enumerated().map({ index, direction in
-            let eyesLabel = EyesLabel(text: eyesTexts[index], direction: direction)
-            // TODO: Remove this
-            eyesLabel.layer.cornerRadius = 35 / 2
+        joystickRelatedEyesLabels = Position.allCases.enumerated().map({ index, position in
+            let eyesLabel = EyesLabel(text: eyesTexts[index], position: position)
             self.addSubview(eyesLabel)
             return eyesLabel
         })
     }
 
-    private func setViewsConstraints() {
+    private func setupViewsConstraints() {
+
         substractView.snp.makeConstraints {
             $0.size.equalTo(substractSize)
             $0.center.equalToSuperview()
@@ -82,27 +98,42 @@ class JoystickView: UIView {
             $0.center.equalToSuperview()
         }
 
-        for eyesLabel in eyesLabels {
+        for eyesLabel in joystickRelatedEyesLabels {
+            let radius = substractSize / 2
+            let margin: CGFloat = 30
+            let offset = viewModel.getOffset(for: eyesLabel.position, inCircleOf: radius, with: margin)
             eyesLabel.snp.makeConstraints {
                 $0.size.equalTo(35)
-                $0.centerY.equalTo(substractView).offset(viewModel.getVerticalOffset(for: eyesLabel.direction,
-                                                                                     radius: substractSize / 2))
-                $0.centerX.equalTo(substractView).offset(viewModel.getHorizontalOffset(for: eyesLabel.direction,
-                                                                                       radius: substractSize / 2))
+                $0.centerY.equalTo(substractView).offset(offset.vertical)
+                $0.centerX.equalTo(substractView).offset(offset.horizontal)
             }
         }
     }
 
-    @objc private func dragJoystick(_ sender: UIPanGestureRecognizer) {
-        let tuple = viewModel.dragJoystick(touchedLocation: sender.location(in: substractView),
-                                           joystickView: joystickView, substractView: substractView,
-                                           innerRadius: innerRadius)
-        joystickView.center = tuple.newCenter
+    // MARK: - Actions
 
-        // TODO: Remove this
-        for eyesLabel in eyesLabels {
-            eyesLabel.selected = eyesLabel.direction == tuple.direction
-            eyesLabel.layer.backgroundColor = eyesLabel.direction == tuple.direction ? UIColor.white.cgColor : .none
+    @objc private func dragJoystick(_ sender: UIPanGestureRecognizer) {
+
+        joystickCenter = viewModel.getNewJoystickCenter(from: sender.location(in: substractView),
+                                                               in: substractView.bounds, with: innerRadius)
+    }
+
+    // MARK: - Functions
+
+    func getJoystickDirection() -> JoystickDirection? {
+
+        guard let joystickCenter = joystickCenter else { return nil }
+
+        let convertedJoystickCenter = substractView.convert(joystickCenter, to: substractView)
+        return viewModel.getJoystickDirectionFromSlope(between: convertedJoystickCenter, and: substractView.center)
+    }
+
+    func selectEyesLabelAccording(to direction: JoystickDirection?) {
+
+        guard let direction = direction else { return }
+
+        for eyesLabel in joystickRelatedEyesLabels {
+            eyesLabel.selected = eyesLabel.position == direction
         }
     }
 }

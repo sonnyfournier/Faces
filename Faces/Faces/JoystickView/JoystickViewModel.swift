@@ -17,46 +17,13 @@ enum JoystickDirection: Int, CaseIterable {
     case bottom
     case bottomLeft
     case left
-
-    var angle: CGFloat {
-        switch self {
-        case .topLeft, .topRight, .bottomRight, .bottomLeft:
-            return 45
-        case .top, .bottom:
-            return 90
-        case .right, .left:
-            return 0
-        }
-    }
-
-    var coordinate: CGPoint {
-        switch self {
-        case .topLeft:
-            return CGPoint(x: -1, y: 1)
-        case .top:
-            return CGPoint(x: 0, y: 1)
-        case .topRight:
-            return CGPoint(x: 1, y: 1)
-        case .right:
-            return CGPoint(x: 1, y: 0)
-        case .bottomRight:
-            return CGPoint(x: 1, y: -1)
-        case .bottom:
-            return CGPoint(x: 0, y: -1)
-        case .bottomLeft:
-            return CGPoint(x: -1, y: -1)
-        case .left:
-            return CGPoint(x: -1, y: 0)
-        }
-    }
 }
 
 class JoystickViewModel {
-    func dragJoystick(touchedLocation: CGPoint, joystickView: UIView, substractView: UIView,
-                      innerRadius: CGFloat) -> (newCenter: CGPoint, direction: JoystickDirection) {
 
-        let substractViewCenter = CGPoint(x: substractView.bounds.width / 2,
-                                          y: substractView.bounds.height / 2)
+    func getNewJoystickCenter(from touchedLocation: CGPoint, in bounds: CGRect, with innerRadius: CGFloat) -> CGPoint {
+
+        let substractViewCenter = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
 
         var newJoystickCenter = touchedLocation
 
@@ -68,25 +35,25 @@ class JoystickViewModel {
             newJoystickCenter = pointOnLine(from: substractViewCenter, to: touchedLocation, distance: innerRadius)
         }
 
-        let convertedJoystickCenter = substractView.convert(newJoystickCenter, to: substractView)
-        let slope = (convertedJoystickCenter.y - substractView.center.y) /
-            -(convertedJoystickCenter.x - substractView.center.x)
-        let degrees = atan(slope) * 180 / CGFloat.pi
-        let direction = getJoystickDirection(joystickCenter: convertedJoystickCenter,
-                                             substractCenter: substractView.center, degrees: degrees)
-
-        // TODO: Remove this
-        return (newJoystickCenter, direction)
+        return newJoystickCenter
     }
 
-    private func getJoystickDirection(joystickCenter: CGPoint, substractCenter: CGPoint,
-                                      degrees: CGFloat) -> JoystickDirection {
+    func getJoystickDirectionFromSlope(between joystickCenter: CGPoint,
+                                       and substractCenter: CGPoint) -> JoystickDirection {
+
+        let slope = (joystickCenter.y - substractCenter.y) / -(joystickCenter.x - substractCenter.x)
+        let degrees = atan(slope) * 180 / CGFloat.pi
+
         // If we check that the location of the joystick y is lower than the location of
         // the substrat y rather than the other way around it is because on iOS the coordinates (0, 0)
         // are located at the top left of the screen.
         // So if the location of the joystick y is lower than the location of the substract y
         // it actually means that joystick center is above substract center
         let joystickIsUp: Bool = joystickCenter.y < substractCenter.y
+
+        // TODO: Explain that with a schema
+        // ???: Maybe use another method:
+        // http://tanopah.jo.free.fr/seconde/trigo2alpha.php
         if abs(degrees) >= 0, abs(degrees) <= 90 / 4 {
             return joystickIsUp ? (degrees > 0 ? JoystickDirection.right : JoystickDirection.left) :
                 (degrees > 0 ? JoystickDirection.left : JoystickDirection.right)
@@ -96,19 +63,35 @@ class JoystickViewModel {
         } else {
             return joystickIsUp ? JoystickDirection.top : JoystickDirection.bottom
         }
+
     }
 
-    func getVerticalOffset(for direction: JoystickDirection?, radius: CGFloat) -> CGFloat {
-        guard let direction = direction else { return 0 }
+    // To place the views in a circle around the joystick
+    // they must all be at equal distance from the center of the joystick.
+    //
+    // If we applied the same distance between the center of the views
+    // and the center of the joystick, the views would be placed in a square. (see diagram 1.1)
+    //
+    // In order to compensate for this, substractView is considered to be a trigonometric circle.
+    // Then, we will be able to project the desired point (located at a `radius' distance from the center of the circle)
+    // in order to obtain its x and y coordinates. (see diagram 1.2)
+    // x = radius * cos(angle)
+    // y = radius * sin(angle)
+    func getOffset(for position: Position?, inCircleOf radius: CGFloat,
+                   with margin: CGFloat) -> (horizontal: CGFloat, vertical: CGFloat) {
 
-        let offset: CGFloat = 30
-        return (radius + offset) * sin(direction.angle.toRadians()) * direction.coordinate.y * -1
-    }
+        guard let position = position else { return (0, 0) }
 
-    func getHorizontalOffset(for direction: JoystickDirection?, radius: CGFloat) -> CGFloat {
-        guard let direction = direction else { return 0 }
+        // The coordinates obtained are multiplied by the coordinates of the position
+        // (which can be equal to -1, 0 or 1) in order to recover negative coordinates
+        // for x in case of "lefties" direction and for y in case of "bottoms" one.
+        let xCoordinate = (radius + margin) * cos(position.angle.toRadians()) * position.coordinate.x
 
-        let offset: CGFloat = 30
-        return (radius + offset) * cos(direction.angle.toRadians()) * direction.coordinate.x
+        // Here, we multiply by -1 because on iOS the coordinates (0, 0) of the screen
+        // are located at the top left of the screen. So we invert the y coordinates
+        // in order to find a "top" and a "bottom" that make sense.
+        let yCoordinate = (radius + margin) * sin(position.angle.toRadians()) * position.coordinate.y * -1
+
+        return (horizontal: xCoordinate, vertical: yCoordinate)
     }
 }
