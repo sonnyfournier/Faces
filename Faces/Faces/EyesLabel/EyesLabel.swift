@@ -57,7 +57,7 @@ class EyesLabel: UILabel {
 
     var selected: Bool = false {
         didSet {
-            self.textColor = selected ? .white : .gray
+            self.textColor = selected ? .systemGray : .systemGray3
         }
     }
     var position: Position?
@@ -72,8 +72,8 @@ class EyesLabel: UILabel {
         self.position = position
 
         self.text = text
-        self.textColor = .gray
-        self.font = UIFont.boldSystemFont(ofSize: 20)
+        self.textColor = .systemGray3
+        self.font = .boldSystemFont(ofSize: 20)
         self.textAlignment = .center
     }
 
