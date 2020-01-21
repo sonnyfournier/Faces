@@ -48,12 +48,11 @@ class JoystickViewModel {
         // the substrat y rather than the other way around it is because on iOS the coordinates (0, 0)
         // are located at the top left of the screen.
         // So if the location of the joystick y is lower than the location of the substract y
-        // it actually means that joystick center is above substract center
+        // it actually means that joystick center is above substract center.
         let joystickIsUp: Bool = joystickCenter.y < substractCenter.y
 
-        // TODO: Explain that with a schema
-        // ???: Maybe use another method:
-        // http://tanopah.jo.free.fr/seconde/trigo2alpha.php
+        // The angle between the slope and the x-axis can be used
+        // to determine in which quarter the joystick is located.
         if abs(degrees) >= 0, abs(degrees) <= 90 / 4 {
             return joystickIsUp ? (degrees > 0 ? JoystickDirection.right : JoystickDirection.left) :
                 (degrees > 0 ? JoystickDirection.left : JoystickDirection.right)
