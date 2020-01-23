@@ -16,13 +16,13 @@ class JoystickView: UIView {
     // MARK: - Properties
 
     var joystickSize: CGFloat = 150
-    var substractSize: CGFloat = 200
+    var containerSize: CGFloat = 200
 
-    /// If you want the "joystick" circle to overlap the "substract" circle, adjust this value
+    /// If you want the "joystick" circle to overlap the container circle, adjust this value
     var offsetMultiplier: CGFloat = 0.5
 
     var joystickColor: UIColor = .systemBackground
-    var substractColor: UIColor = .gray
+    var containerColor: UIColor = .gray
 
     // MARK: - Private properties
 
@@ -41,7 +41,7 @@ class JoystickView: UIView {
 
     // MARK: - Views
 
-    private let substractView = UIView()
+    private let containerView = UIView()
     private let joystickView = UIView()
     private var joystickRelatedEyesLabels: [EyesLabel] = []
 
@@ -56,7 +56,7 @@ class JoystickView: UIView {
         setupViews()
         setupViewsConstraints()
 
-        innerRadius = (substractSize - joystickSize) * offsetMultiplier
+        innerRadius = (containerSize - joystickSize) * offsetMultiplier
     }
 
     required init?(coder: NSCoder) {
@@ -68,19 +68,20 @@ class JoystickView: UIView {
 
     private func setupViews() {
 
-        substractView.backgroundColor = substractColor
-        substractView.layer.cornerRadius = CGFloat(substractSize / 2)
-        self.addSubview(substractView)
+        containerView.backgroundColor = containerColor
+        containerView.layer.cornerRadius = CGFloat(containerSize / 2)
+        self.addSubview(containerView)
 
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(dragJoystick(_:)))
         joystickView.isUserInteractionEnabled = true
         joystickView.addGestureRecognizer(panGesture)
         joystickView.backgroundColor = joystickColor
         joystickView.layer.cornerRadius = CGFloat(joystickSize / 2)
-        substractView.addSubview(joystickView)
+        containerView.addSubview(joystickView)
 
         joystickRelatedEyesLabels = Position.allCases.enumerated().map({ index, position in
-            let eyesLabel = EyesLabel(text: eyesTexts[index], position: position)
+            let eyesLabelViewModel = EyesLabelViewModel(text: eyesTexts[index], position: position)
+            let eyesLabel = EyesLabel(viewModel: eyesLabelViewModel)
             self.addSubview(eyesLabel)
             return eyesLabel
         })
@@ -88,8 +89,8 @@ class JoystickView: UIView {
 
     private func setupViewsConstraints() {
 
-        substractView.snp.makeConstraints {
-            $0.size.equalTo(substractSize)
+        containerView.snp.makeConstraints {
+            $0.size.equalTo(containerSize)
             $0.center.equalToSuperview()
         }
 
@@ -99,13 +100,13 @@ class JoystickView: UIView {
         }
 
         for eyesLabel in joystickRelatedEyesLabels {
-            let radius = substractSize / 2
+            let radius = containerSize / 2
             let margin: CGFloat = 30
             let offset = viewModel.getOffset(for: eyesLabel.position, inCircleOf: radius, with: margin)
             eyesLabel.snp.makeConstraints {
                 $0.size.equalTo(35)
-                $0.centerY.equalTo(substractView).offset(offset.vertical)
-                $0.centerX.equalTo(substractView).offset(offset.horizontal)
+                $0.centerY.equalTo(containerView).offset(offset.vertical)
+                $0.centerX.equalTo(containerView).offset(offset.horizontal)
             }
         }
     }
@@ -114,8 +115,8 @@ class JoystickView: UIView {
 
     @objc private func dragJoystick(_ sender: UIPanGestureRecognizer) {
 
-        joystickCenter = viewModel.getNewJoystickCenter(from: sender.location(in: substractView),
-                                                               in: substractView.bounds, with: innerRadius)
+        joystickCenter = viewModel.getNewJoystickCenter(from: sender.location(in: containerView),
+                                                               in: containerView.bounds, with: innerRadius)
     }
 
     // MARK: - Functions
@@ -124,8 +125,8 @@ class JoystickView: UIView {
 
         guard let joystickCenter = joystickCenter else { return nil }
 
-        let convertedJoystickCenter = substractView.convert(joystickCenter, to: substractView)
-        return viewModel.getJoystickDirectionFromSlope(between: convertedJoystickCenter, and: substractView.center)
+        let convertedJoystickCenter = containerView.convert(joystickCenter, to: containerView)
+        return viewModel.getJoystickDirectionFromSlope(between: convertedJoystickCenter, and: containerView.center)
     }
 
     func selectEyesLabelAccording(to direction: JoystickDirection?) {

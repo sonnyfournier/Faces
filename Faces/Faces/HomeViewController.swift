@@ -32,7 +32,7 @@ class HomeViewController: UIViewController {
         let joystickViewModel = JoystickViewModel()
         joystickView = JoystickView(viewModel: joystickViewModel)
         joystickView.joystickSize = 150
-        joystickView.substractSize = 200
+        joystickView.containerSize = 200
         joystickView.offsetMultiplier = 0.7
         self.view.addSubview(joystickView)
     }

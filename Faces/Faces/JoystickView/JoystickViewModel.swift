@@ -23,33 +23,33 @@ class JoystickViewModel {
 
     func getNewJoystickCenter(from touchedLocation: CGPoint, in bounds: CGRect, with innerRadius: CGFloat) -> CGPoint {
 
-        let substractViewCenter = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
+        let containerViewCenter = CGPoint(x: bounds.width / 2, y: bounds.height / 2)
 
         var newJoystickCenter = touchedLocation
 
-        let distance = lineLength(from: touchedLocation, to: substractViewCenter)
+        let distance = lineLength(from: touchedLocation, to: containerViewCenter)
 
-        // If the touch would put the joystick view outside the substract view
+        // If the touch would put the joystick view outside the container view
         // find the point on the line from center to touch, at innerRadius distance
         if distance > innerRadius {
-            newJoystickCenter = pointOnLine(from: substractViewCenter, to: touchedLocation, distance: innerRadius)
+            newJoystickCenter = pointOnLine(from: containerViewCenter, to: touchedLocation, distance: innerRadius)
         }
 
         return newJoystickCenter
     }
 
     func getJoystickDirectionFromSlope(between joystickCenter: CGPoint,
-                                       and substractCenter: CGPoint) -> JoystickDirection {
+                                       and containerCenter: CGPoint) -> JoystickDirection {
 
-        let slope = (joystickCenter.y - substractCenter.y) / -(joystickCenter.x - substractCenter.x)
+        let slope = (joystickCenter.y - containerCenter.y) / -(joystickCenter.x - containerCenter.x)
         let degrees = atan(slope) * 180 / CGFloat.pi
 
         // If we check that the location of the joystick y is lower than the location of
         // the substrat y rather than the other way around it is because on iOS the coordinates (0, 0)
         // are located at the top left of the screen.
-        // So if the location of the joystick y is lower than the location of the substract y
-        // it actually means that joystick center is above substract center.
-        let joystickIsUp: Bool = joystickCenter.y < substractCenter.y
+        // So if the location of the joystick y is lower than the location of the container y
+        // it actually means that joystick center is above container center.
+        let joystickIsUp: Bool = joystickCenter.y < containerCenter.y
 
         // The angle between the slope and the x-axis can be used
         // to determine in which quarter the joystick is located.
@@ -71,7 +71,7 @@ class JoystickViewModel {
     // If we applied the same distance between the center of the views
     // and the center of the joystick, the views would be placed in a square. (see diagram 1.1)
     //
-    // In order to compensate for this, substractView is considered to be a trigonometric circle.
+    // In order to compensate for this, containerView is considered to be a trigonometric circle.
     // Then, we will be able to project the desired point (located at a `radius' distance from the center of the circle)
     // in order to obtain its x and y coordinates. (see diagram 1.2)
     // x = radius * cos(angle)
