@@ -51,7 +51,7 @@ extension Position {
 
 class EyesLabel: UILabel {
 
-    //var viewModel: EyesViewModel
+    var viewModel: EyesLabelViewModel
 
     // MARK: Properties
 
@@ -64,14 +64,15 @@ class EyesLabel: UILabel {
 
     // MARK: - Initialization
 
-    init(text: String, position: Position) {
+    init(viewModel: EyesLabelViewModel) {
 
-        // self.viewModel = viewModel
+        self.viewModel = viewModel
+
         super.init(frame: CGRect.zero)
 
-        self.position = position
+        self.position = viewModel.position
 
-        self.text = text
+        self.text = viewModel.text
         self.textColor = .systemGray3
         self.font = .boldSystemFont(ofSize: 20)
         self.textAlignment = .center

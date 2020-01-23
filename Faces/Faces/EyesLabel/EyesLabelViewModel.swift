@@ -7,3 +7,13 @@
 //
 
 import Foundation
+
+class EyesLabelViewModel {
+    let text: String
+    let position: Position
+
+    init(text: String, position: Position) {
+        self.text = text
+        self.position = position
+    }
+}
