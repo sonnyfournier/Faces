@@ -2,8 +2,7 @@
 platform :ios, '13.2'
 
 target 'Faces' do
-  # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
+  use_modular_headers!
 
   # Pods for Faces
   pod 'SnapKit', '~> 5.0.1'               # Auto Layout DSL
